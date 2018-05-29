@@ -2,7 +2,9 @@
 title: "Bill Text"
 author: "Beau Harrison"
 date: "May 29, 2018"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -40,7 +42,7 @@ v <- sort(rowSums(m),decreasing=TRUE)
 d <- data.frame(word = names(v),freq=v)
 ```
 
-```{r wordcloud}
+```{r wordcloud, warning=FALSE}
 set.seed(1234)
 wordcloud(words = d$word, freq = d$freq, min.freq = 1,
           max.words=200, random.order=FALSE, rot.per=0.35, 
