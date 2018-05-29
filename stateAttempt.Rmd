@@ -1,0 +1,22 @@
+---
+title: "Bill Language by State"
+author: "Beau Harrison"
+date: "May 28, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(ggmap)
+library(maps)
+```
+
+```{r}
+usa <- map_data("state") %>% as_tibble()
+
+ggplot(data = usa, mapping = aes(x = long, y = lat, group = group)) + 
+  geom_polygon(color = "black", fill = "grey") +
+  coord_map(projection = "albers", lat0 = 25, lat1 = 50)
+```

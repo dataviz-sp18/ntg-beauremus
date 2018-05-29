@@ -1,0 +1,48 @@
+---
+title: "Bill Text"
+author: "Beau Harrison"
+date: "May 29, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# This code is from http://www.sthda.com/english/wiki/text-mining-and-word-cloud-fundamentals-in-r-5-simple-steps-you-should-know
+
+library(tm)
+library(SnowballC)
+library(wordcloud)
+library(RColorBrewer)
+```
+
+```{r textImport}
+doc <- Corpus(VectorSource(readLines('114-text.txt')))
+```
+
+```{r cleanUp}
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+doc <- tm_map(doc, toSpace, "/")
+doc <- tm_map(doc, toSpace, "@")
+doc <- tm_map(doc, toSpace, "\\|")
+doc <- tm_map(doc, content_transformer(tolower))
+doc <- tm_map(doc, removeNumbers)
+doc <- tm_map(doc, removeWords, stopwords("english"))
+doc <- tm_map(doc, removeWords, c("the", "and", "that")) 
+doc <- tm_map(doc, removePunctuation)
+doc <- tm_map(doc, stripWhitespace)
+```
+
+```{r restructure}
+dtm <- TermDocumentMatrix(doc)
+m <- as.matrix(dtm)
+v <- sort(rowSums(m),decreasing=TRUE)
+d <- data.frame(word = names(v),freq=v)
+```
+
+```{r wordcloud}
+set.seed(1234)
+wordcloud(words = d$word, freq = d$freq, min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+```
